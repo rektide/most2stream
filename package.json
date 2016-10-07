@@ -1,0 +1,24 @@
+{
+	"name": "most2whatstream",
+	"version": "1.0.0",
+	"description": "Convert between Most and WHATWG Streams",
+	"main": "most2whatstream.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/rektide/most2whatstream.git"
+	},
+	"keywords": ["most", "stream", "whatwg"],
+	"author": "rektide de la faye",
+	"license": "X11",
+	"bugs": {
+		"url": "https://github.com/rektide/most2whatstream/issues"
+	},
+	"homepage": "https://github.com/rektide/most2whatstream#readme",
+	"dependencies": {
+		"most": "^1.0.3",
+		"web-streams-polyfill": "^1.3.0"
+	}
+}
