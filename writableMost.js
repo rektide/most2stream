@@ -20,7 +20,7 @@ function WritableMost(){
 	 */
 	function unfold(){
 		// drain stored
-		if(ingress.length)
+		if(ingress.length){
 			var value = ingress.pop()
 			return {
 				value
