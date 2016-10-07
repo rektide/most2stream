@@ -4,10 +4,8 @@
 var WritableMost = require("..").WritableMost
 var Most = require("most")
 
-process.on("unhandledRejection", x => console.log(x))
-
 var writable = WritableMost()
-writable.most.forEach(x => console.log(x)).then(x => console.log("done", x))
+writable.most.forEach(x => console.log("got:", x)).then(x => console.log("done", x))
 var writer = writable.writable.getWriter()
 writer.write(1)
 writer.write(2)
@@ -19,5 +17,7 @@ writer.write(7)
 writer.write(8)
 setTimeout(function(){
 	writer.write(9)
+}, 600)
+setTimeout(function(){
 	writer.close()
-}, 1000)
+}, 1200)

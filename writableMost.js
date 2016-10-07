@@ -8,41 +8,51 @@ var WhatwgStreams = require("web-streams-polyfill")
  */
 function WritableMost(){
 	/**
-	 * Ingresser deferred transfers values from the writable stream to the Most.unfold loop.
+	 * Store for incoming elements
 	 * @private
 	 */
-	var ingresser = Promise.defer()
+	var ingress = [] // hold written data in here until it can be processed
+	var signal // if existing, unfold waiting for data
+	var going = false // state of the writable
 
 	/**
 	 * stream unfolds through all the available ingresser deferreds until no more are available
 	 */
-	var most = Most.unfold(function(seed){
-		if(!seed){
+	function unfold(){
+		// drain stored
+		if(ingress.length)
+			var value = ingress.pop()
+			return {
+				value
+			}
+		}
+		// drained, check for done
+		if(!going){
 			return {
 				done: true
 			}
 		}
-		var next = ingresser && ingresser.promise
-		return seed.then(function(value){
-			return {
-				value,
-				seed: next
-			}
-		})
-	}, ingresser.promise)
+		// loop
+		signal = Promise.defer()
+		return signal.promise.then(unfold)
+	}
+	var most = Most.unfold(unfold)
 	/**
 	 * writable represents the writable stream 
 	 */	
 	var writable = new (WhatwgStreams.WritableStream)({
 		start(controller){
+			going = true
 		},
 		write(chunk){
-			var ingress = ingresser
-			ingresser = Promise.defer()
-			ingress.resolve(chunk)
+			ingress.push(chunk)
+			if(signal){
+				signal.resolve()
+				signal = null
+			}
 		},
 		close(){
-			ingresser = null
+			going = false
 		}
 	})
 	return {most, writable}
